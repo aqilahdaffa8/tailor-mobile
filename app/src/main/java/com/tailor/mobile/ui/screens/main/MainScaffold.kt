@@ -30,7 +30,8 @@ import com.tailor.mobile.ui.screens.dashboard.DashboardViewModel
 import com.tailor.mobile.ui.screens.menu.MenuScreen
 import com.tailor.mobile.ui.screens.pelanggan.PelangganScreen
 import com.tailor.mobile.ui.screens.pelanggan.PelangganViewModel
-import com.tailor.mobile.ui.screens.pesanan.PesananPlaceholderScreen
+import com.tailor.mobile.ui.screens.pesanan.PesananScreen
+import com.tailor.mobile.ui.screens.pesanan.PesananViewModel
 import com.tailor.mobile.ui.screens.pola.PolaScreen
 import com.tailor.mobile.ui.theme.PureWhite
 import com.tailor.mobile.ui.theme.Zinc100
@@ -44,7 +45,8 @@ fun MainScaffold(
     authViewModel: AuthViewModel,
     onLogoutSuccess: () -> Unit,
     dashboardViewModel: DashboardViewModel = viewModel(),
-    pelangganViewModel: PelangganViewModel = viewModel()
+    pelangganViewModel: PelangganViewModel = viewModel(),
+    pesananViewModel: PesananViewModel = viewModel()
 ) {
     var currentTab by remember { mutableStateOf<BottomNavItem>(BottomNavItem.Dashboard) }
     var triggerAddCustomer by remember { mutableStateOf(false) }
@@ -91,6 +93,9 @@ fun MainScaffold(
                             if (currentTab == BottomNavItem.Pelanggan && item == BottomNavItem.Pelanggan) {
                                 pelangganViewModel.clearSelectedPelanggan()
                             }
+                            if (currentTab == BottomNavItem.Pesanan && item == BottomNavItem.Pesanan) {
+                                pesananViewModel.clearSelectedPesanan()
+                            }
                             currentTab = item
                         },
                         icon = {
@@ -134,11 +139,19 @@ fun MainScaffold(
                             triggerAddCustomer = true
                             currentTab = BottomNavItem.Pelanggan
                         },
-                        onOrderClick = { /* Nanti navigasi ke detail pesanan di Tahap 5 */ }
+                        onOrderClick = { pesananId ->
+                            pesananViewModel.loadPesananDetail(pesananId)
+                            currentTab = BottomNavItem.Pesanan
+                        }
                     )
                 }
                 is BottomNavItem.Pesanan -> {
-                    PesananPlaceholderScreen()
+                    PesananScreen(
+                        viewModel = pesananViewModel,
+                        onNavigateToNewOrder = {
+                            /* Will open new order modal in Tahap 6 */
+                        }
+                    )
                 }
                 is BottomNavItem.Pelanggan -> {
                     val openAdd = triggerAddCustomer

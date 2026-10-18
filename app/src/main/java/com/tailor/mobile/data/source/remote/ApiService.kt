@@ -12,6 +12,7 @@ import com.tailor.mobile.data.source.remote.response.JenisPakaianDto
 import com.tailor.mobile.data.source.remote.response.KategoriPolaDto
 import com.tailor.mobile.data.source.remote.response.PelangganDto
 import com.tailor.mobile.data.source.remote.response.PengukuranDto
+import com.tailor.mobile.data.source.remote.response.PesananDto
 import com.tailor.mobile.data.source.remote.response.PesananRingkasDto
 import com.tailor.mobile.data.source.remote.response.PolaDetailDto
 import com.tailor.mobile.data.source.remote.response.ReminderDto
@@ -176,6 +177,27 @@ interface ApiService {
 
     @DELETE("pola/detail/{id}")
     suspend fun deletePolaDetail(
+        @Path("id") id: Int
+    ): Response<ApiResponse<Unit>>
+
+    // Pesanan Endpoints
+    @GET("pesanan")
+    suspend fun getPesananList(
+        @Query("search") search: String? = null,
+        @Query("status") status: String? = null,
+        @Query("pelanggan_id") pelangganId: Int? = null,
+        @Query("deadline") deadline: String? = null,
+        @Query("pembayaran") pembayaran: String? = null,
+        @Query("per_page") perPage: Int = 30
+    ): Response<ApiResponse<List<PesananDto>>>
+
+    @GET("pesanan/{id}")
+    suspend fun getPesananDetail(
+        @Path("id") id: Int
+    ): Response<ApiResponse<PesananDto>>
+
+    @DELETE("pesanan/{id}")
+    suspend fun batalkanPesanan(
         @Path("id") id: Int
     ): Response<ApiResponse<Unit>>
 }
