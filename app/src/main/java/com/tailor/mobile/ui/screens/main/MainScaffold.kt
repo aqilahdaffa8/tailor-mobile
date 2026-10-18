@@ -1,11 +1,9 @@
 package com.tailor.mobile.ui.screens.main
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -30,8 +28,10 @@ import com.tailor.mobile.ui.screens.auth.AuthViewModel
 import com.tailor.mobile.ui.screens.dashboard.DashboardScreen
 import com.tailor.mobile.ui.screens.dashboard.DashboardViewModel
 import com.tailor.mobile.ui.screens.menu.MenuScreen
-import com.tailor.mobile.ui.screens.pelanggan.PelangganPlaceholderScreen
+import com.tailor.mobile.ui.screens.pelanggan.PelangganScreen
+import com.tailor.mobile.ui.screens.pelanggan.PelangganViewModel
 import com.tailor.mobile.ui.screens.pesanan.PesananPlaceholderScreen
+import com.tailor.mobile.ui.screens.pola.PolaScreen
 import com.tailor.mobile.ui.theme.PureWhite
 import com.tailor.mobile.ui.theme.Zinc100
 import com.tailor.mobile.ui.theme.Zinc200
@@ -43,9 +43,20 @@ import com.tailor.mobile.ui.theme.Zinc900
 fun MainScaffold(
     authViewModel: AuthViewModel,
     onLogoutSuccess: () -> Unit,
-    dashboardViewModel: DashboardViewModel = viewModel()
+    dashboardViewModel: DashboardViewModel = viewModel(),
+    pelangganViewModel: PelangganViewModel = viewModel()
 ) {
     var currentTab by remember { mutableStateOf<BottomNavItem>(BottomNavItem.Dashboard) }
+    var triggerAddCustomer by remember { mutableStateOf(false) }
+    var showingPolaLibrary by remember { mutableStateOf(false) }
+
+    if (showingPolaLibrary) {
+        BackHandler { showingPolaLibrary = false }
+        PolaScreen(
+            onBack = { showingPolaLibrary = false }
+        )
+        return
+    }
 
     val navItems = listOf(
         BottomNavItem.Dashboard,
@@ -76,7 +87,12 @@ fun MainScaffold(
                     val isSelected = currentTab == item
                     NavigationBarItem(
                         selected = isSelected,
-                        onClick = { currentTab = item },
+                        onClick = {
+                            if (currentTab == BottomNavItem.Pelanggan && item == BottomNavItem.Pelanggan) {
+                                pelangganViewModel.clearSelectedPelanggan()
+                            }
+                            currentTab = item
+                        },
                         icon = {
                             Icon(
                                 imageVector = if (isSelected) item.selectedIcon else item.icon,
@@ -115,6 +131,7 @@ fun MainScaffold(
                             currentTab = BottomNavItem.Pesanan
                         },
                         onNavigateToNewCustomer = {
+                            triggerAddCustomer = true
                             currentTab = BottomNavItem.Pelanggan
                         },
                         onOrderClick = { /* Nanti navigasi ke detail pesanan di Tahap 5 */ }
@@ -124,13 +141,27 @@ fun MainScaffold(
                     PesananPlaceholderScreen()
                 }
                 is BottomNavItem.Pelanggan -> {
-                    PelangganPlaceholderScreen()
+                    val openAdd = triggerAddCustomer
+                    if (triggerAddCustomer) {
+                        triggerAddCustomer = false
+                    }
+                    PelangganScreen(
+                        viewModel = pelangganViewModel,
+                        initialShowAddDialog = openAdd
+                    )
                 }
                 is BottomNavItem.Menu -> {
                     MenuScreen(
                         authViewModel = authViewModel,
                         onLogoutClick = {
                             authViewModel.logout(onLogoutSuccess)
+                        },
+                        onNavigateToPelanggan = {
+                            pelangganViewModel.clearSelectedPelanggan()
+                            currentTab = BottomNavItem.Pelanggan
+                        },
+                        onNavigateToPola = {
+                            showingPolaLibrary = true
                         }
                     )
                 }

@@ -41,4 +41,6 @@ object Formatters {
             dateStr.take(10)
         }
     }
+
+    fun formatDate(dateStr: String?): String = formatTanggal(dateStr)
 }

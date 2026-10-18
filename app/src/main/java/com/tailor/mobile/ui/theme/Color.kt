@@ -32,6 +32,9 @@ val RoseBg = Color(0xFFFFF1F2)
 val RoseText = Color(0xFFBE123C)
 val RoseBorder = Color(0x33E11D48) // ring-rose-600/20
 
+val Rose50 = RoseBg
+val Rose600 = RoseText
+
 // Draf / Netral
 val SlateBg = Color(0xFFF1F5F9)
 val SlateText = Color(0xFF334155)

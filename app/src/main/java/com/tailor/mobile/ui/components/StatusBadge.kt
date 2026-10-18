@@ -68,3 +68,25 @@ fun StatusBadge(
         )
     }
 }
+
+/**
+ * Status Badge overload mapping status string directly
+ */
+@Composable
+fun StatusBadge(
+    status: String,
+    modifier: Modifier = Modifier
+) {
+    val (label, variant) = when (status.lowercase()) {
+        "aktif" -> "Aktif" to BadgeVariant.SUCCESS
+        "selesai" -> "Selesai" to BadgeVariant.SUCCESS
+        "lunas" -> "Lunas" to BadgeVariant.SUCCESS
+        "proses", "dikerjakan" -> "Proses" to BadgeVariant.WARNING
+        "dp" -> "DP Terbayar" to BadgeVariant.WARNING
+        "belum_bayar", "belum lunas", "belum bayar" -> "Belum Bayar" to BadgeVariant.ERROR
+        "terlambat" -> "Terlambat" to BadgeVariant.ERROR
+        "batal" -> "Batal" to BadgeVariant.ERROR
+        else -> status.replaceFirstChar { it.uppercase() } to BadgeVariant.NEUTRAL
+    }
+    StatusBadge(text = label, variant = variant, modifier = modifier)
+}

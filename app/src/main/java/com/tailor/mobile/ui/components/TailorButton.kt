@@ -3,10 +3,12 @@ package com.tailor.mobile.ui.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,12 +23,134 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tailor.mobile.ui.theme.ControlShape
 import com.tailor.mobile.ui.theme.PureWhite
+import com.tailor.mobile.ui.theme.RoseBg
+import com.tailor.mobile.ui.theme.RoseBorder
+import com.tailor.mobile.ui.theme.RoseText
 import com.tailor.mobile.ui.theme.Zinc100
 import com.tailor.mobile.ui.theme.Zinc200
 import com.tailor.mobile.ui.theme.Zinc400
 import com.tailor.mobile.ui.theme.Zinc700
 import com.tailor.mobile.ui.theme.Zinc800
 import com.tailor.mobile.ui.theme.Zinc900
+
+enum class TailorButtonVariant {
+    Primary,
+    Secondary,
+    Danger
+}
+
+/**
+ * Universal Button component implementing DESIGN.md specifications
+ */
+@Composable
+fun TailorButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    variant: TailorButtonVariant = TailorButtonVariant.Primary,
+    enabled: Boolean = true,
+    isLoading: Boolean = false,
+    leadingIcon: (@Composable () -> Unit)? = null
+) {
+    when (variant) {
+        TailorButtonVariant.Primary -> {
+            Button(
+                onClick = onClick,
+                modifier = modifier.height(44.dp),
+                enabled = enabled && !isLoading,
+                shape = ControlShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Zinc900,
+                    contentColor = PureWhite,
+                    disabledContainerColor = Zinc200,
+                    disabledContentColor = Zinc400
+                ),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp, pressedElevation = 0.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        color = PureWhite,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (leadingIcon != null) {
+                            leadingIcon()
+                            Spacer(modifier = Modifier.width(6.dp))
+                        }
+                        Text(
+                            text = text,
+                            color = PureWhite,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            }
+        }
+        TailorButtonVariant.Secondary -> {
+            OutlinedButton(
+                onClick = onClick,
+                modifier = modifier.height(44.dp),
+                enabled = enabled && !isLoading,
+                shape = ControlShape,
+                border = BorderStroke(1.dp, Zinc200),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = PureWhite,
+                    contentColor = Zinc700,
+                    disabledContentColor = Zinc400
+                ),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        color = Zinc700,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (leadingIcon != null) {
+                            leadingIcon()
+                            Spacer(modifier = Modifier.width(6.dp))
+                        }
+                        Text(
+                            text = text,
+                            color = Zinc700,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            }
+        }
+        TailorButtonVariant.Danger -> {
+            Button(
+                onClick = onClick,
+                modifier = modifier.height(44.dp),
+                enabled = enabled && !isLoading,
+                shape = ControlShape,
+                border = BorderStroke(1.dp, RoseBorder),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = RoseBg,
+                    contentColor = RoseText
+                ),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
+            ) {
+                Text(
+                    text = text,
+                    color = RoseText,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+}
 
 /**
  * Primary CTA Button - Zinc 900 Charcoal with 8dp radius (DESIGN.md)
@@ -39,37 +163,14 @@ fun TailorPrimaryButton(
     enabled: Boolean = true,
     isLoading: Boolean = false
 ) {
-    Button(
+    TailorButton(
+        text = text,
         onClick = onClick,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(46.dp),
-        enabled = enabled && !isLoading,
-        shape = ControlShape,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Zinc900,
-            contentColor = PureWhite,
-            disabledContainerColor = Zinc200,
-            disabledContentColor = Zinc400
-        ),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp, pressedElevation = 0.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
-    ) {
-        if (isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(20.dp),
-                color = PureWhite,
-                strokeWidth = 2.dp
-            )
-        } else {
-            Text(
-                text = text,
-                color = PureWhite,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
+        modifier = modifier.fillMaxWidth(),
+        variant = TailorButtonVariant.Primary,
+        enabled = enabled,
+        isLoading = isLoading
+    )
 }
 
 /**
@@ -82,27 +183,11 @@ fun TailorSecondaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true
 ) {
-    OutlinedButton(
+    TailorButton(
+        text = text,
         onClick = onClick,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(46.dp),
-        enabled = enabled,
-        shape = ControlShape,
-        border = BorderStroke(1.dp, Zinc200),
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = PureWhite,
-            contentColor = Zinc700,
-            disabledContentColor = Zinc400
-        ),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
-    ) {
-        Text(
-            text = text,
-            color = Zinc700,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
+        modifier = modifier.fillMaxWidth(),
+        variant = TailorButtonVariant.Secondary,
+        enabled = enabled
+    )
 }

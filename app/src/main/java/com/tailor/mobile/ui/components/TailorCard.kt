@@ -23,18 +23,35 @@ fun TailorCard(
     backgroundColor: Color = PureWhite,
     borderColor: Color = Zinc200,
     contentPadding: Dp = 16.dp,
+    onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Surface(
-        modifier = modifier,
-        shape = CardShape,
-        color = backgroundColor,
-        border = BorderStroke(1.dp, borderColor),
-        shadowElevation = 0.dp
-    ) {
-        Column(
-            modifier = Modifier.padding(contentPadding),
-            content = content
-        )
+    if (onClick != null) {
+        Surface(
+            onClick = onClick,
+            modifier = modifier,
+            shape = CardShape,
+            color = backgroundColor,
+            border = BorderStroke(1.dp, borderColor),
+            shadowElevation = 0.dp
+        ) {
+            Column(
+                modifier = Modifier.padding(contentPadding),
+                content = content
+            )
+        }
+    } else {
+        Surface(
+            modifier = modifier,
+            shape = CardShape,
+            color = backgroundColor,
+            border = BorderStroke(1.dp, borderColor),
+            shadowElevation = 0.dp
+        ) {
+            Column(
+                modifier = Modifier.padding(contentPadding),
+                content = content
+            )
+        }
     }
 }

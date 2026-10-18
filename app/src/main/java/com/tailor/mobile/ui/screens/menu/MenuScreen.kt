@@ -1,6 +1,5 @@
 package com.tailor.mobile.ui.screens.menu
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +26,6 @@ import androidx.compose.material.icons.outlined.Straighten
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -44,17 +42,13 @@ import androidx.compose.ui.unit.sp
 import com.tailor.mobile.ui.components.TailorCard
 import com.tailor.mobile.ui.components.TailorSecondaryButton
 import com.tailor.mobile.ui.screens.auth.AuthViewModel
-import com.tailor.mobile.ui.theme.CardShape
 import com.tailor.mobile.ui.theme.ControlShape
 import com.tailor.mobile.ui.theme.PillShape
 import com.tailor.mobile.ui.theme.PureWhite
 import com.tailor.mobile.ui.theme.Zinc100
-import com.tailor.mobile.ui.theme.Zinc200
 import com.tailor.mobile.ui.theme.Zinc400
 import com.tailor.mobile.ui.theme.Zinc50
 import com.tailor.mobile.ui.theme.Zinc500
-import com.tailor.mobile.ui.theme.Zinc600
-import com.tailor.mobile.ui.theme.Zinc700
 import com.tailor.mobile.ui.theme.Zinc900
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,6 +56,8 @@ import com.tailor.mobile.ui.theme.Zinc900
 fun MenuScreen(
     authViewModel: AuthViewModel,
     onLogoutClick: () -> Unit,
+    onNavigateToPelanggan: () -> Unit = {},
+    onNavigateToPola: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val loginState by authViewModel.loginState.collectAsState()
@@ -148,14 +144,14 @@ fun MenuScreen(
                     title = "Library Pola",
                     subtitle = "Standar pola dan ukuran pakaian",
                     icon = Icons.Outlined.Straighten,
-                    onClick = { /* Akan disambungkan di Tahap 4 */ }
+                    onClick = onNavigateToPola
                 )
                 MenuItemDivider()
                 MenuItemRow(
                     title = "Pengukuran Pelanggan",
                     subtitle = "Riwayat dimensi tubuh pelanggan",
                     icon = Icons.Outlined.SquareFoot,
-                    onClick = { /* Akan disambungkan di Tahap 3 */ }
+                    onClick = onNavigateToPelanggan
                 )
                 MenuItemDivider()
                 MenuItemRow(
